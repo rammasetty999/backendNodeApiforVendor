@@ -33,7 +33,9 @@ const vendorlogin=async (req,res) => {
                 return res.status(400).json({error:"not a valid one or incorrect password"})
         }
         const token=jsonwebtoken.sign({vendorId:ven._id},process.env.key,{expiresIn:"1h"})
-        res.status(207).json({msg:"successful login",token:token})
+        let fm=ven.firm[0]
+        console.log(`thisis ven firm ${fm}`)
+        res.status(207).json({msg:"successful login",token:token,fm})
         console.log('login successful')
     } catch (error) {
         res.status(403).json(error)

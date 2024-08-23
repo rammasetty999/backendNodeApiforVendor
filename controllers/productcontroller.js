@@ -1,6 +1,7 @@
 const product=require('../models/product')
 const multer=require('multer')
 const Firm=require('../models/firm')
+const path=require('path')
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, 'uploads/'); 

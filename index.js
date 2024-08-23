@@ -5,7 +5,9 @@ const dotenv=require('dotenv').config()
 const router=require('./routes/vendorroute')
 const froutes=require('./routes/firmroute')
 const proutes=require('./routes/productroute')
+const cors=require('cors')
 const app=express()
+app.use(cors())
 const port=process.env.port || 5000
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyparser.json())

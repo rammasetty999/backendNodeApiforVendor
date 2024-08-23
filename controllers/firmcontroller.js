@@ -1,12 +1,13 @@
 const vendor=require('../models/vendor')
+const path=require('path')
 const firm=require('../models/firm')
 const multer=require('multer')
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, 'uploads/'); // Folder to save images
+      cb(null, 'uploads/'); 
     },
     filename: (req, file, cb) => {
-      cb(null, Date.now() + path.extname(file.originalname)); // Append the current timestamp to the original filename
+      cb(null, Date.now() + path.extname(file.originalname)); 
     }
   });
   const upload=multer({storage:storage})
@@ -16,6 +17,10 @@ const addfirm=async (req,res) => {
     const image=req.file?req.file.filename:undefined;
 
     const vend=await vendor.findById(req.vendorId)
+    if(vend.firm.length>0){
+      msg="already firm exists"
+      return res.status(400).json({msg})
+    }
     if(!vend){
       res.status(400).json("no vendor")
     }
@@ -23,9 +28,10 @@ const addfirm=async (req,res) => {
         firmname,area,category,region,offer,image,vendor:vend._id
     })
    const dup= await frm.save();
+   const fm=dup._id
    vend.firm.push(dup)
    await vend.save()
-    return res.status(200).json("firm created successfully")
+    return res.status(200).json({fm})
   }
   catch(error)
   {
@@ -47,7 +53,22 @@ const deletefirmbyid=async (req,res) => {
   } catch (error) {
       res.status(400).json(error)
       
+  }}
+const getafm =async (req,res) => {
+  try {
+    const pid=req.params.firmid
+    const fir= await firm.findById(pid)
+    if(!fir){
+      return res.status(400).json("not found ")
+    }
+   await console.log(fir.firmname)
+   let a=fir.firmname
+    res.status(200).json({"a":a})
+    
+  } catch (error) {
+    res.status(400).json(error)
   }
   
 }
-module.exports={addfirm:[upload.single('image'),addfirm],deletefirmbyid}
+
+module.exports={addfirm:[upload.single('image'),addfirm],deletefirmbyid,getafm}
